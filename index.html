@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Sign In with Auth0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<style>
+    body,
+    html {
+        height: 100%;
+        background-color: #f9f9f9;
+    }
+
+    .login-container {
+        position: relative;
+        height: 100%;
+    }
+
+    .login-box {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 15px;
+        background-color: #fff;
+        box-shadow: 0px 5px 5px #ccc;
+        border-radius: 5px;
+        border-top: 1px solid #e9e9e9;
+    }
+
+    .login-header {
+        text-align: center;
+    }
+
+    .login-header img {
+        width: 75px;
+    }
+
+    #error-message {
+        display: none;
+        white-space: break-spaces;
+    }
+</style>
+
+<body>
+    <div class="login-container">
+        <div class="col-xs-12 col-sm-4 col-sm-offset-4 login-box">
+            <div class="login-header">
+                <img
+                    src="data:image/png;base64,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" />
+                <h3>Welcome</h3>
+                <h5>PLEASE LOG IN</h5>
+            </div>
+            <div id="error-message" class="alert alert-danger"></div>
+            <form onsubmit="return false;" method="post">
+
+                <div class="form-group">
+                    <label for="name">Phone Number</label>
+                    <input class="form-control" id="phone-input" placeholder="Input Phone Number">
+                    <label for="name">Verify Code</label>
+                    <input type="number" class="form-control" id="code-input" placeholder="Enter your code">
+
+                </div>
+                <button type="button" id="btn-sendcode" class="btn btn-default btn-block">
+                    Send Code
+                </button>
+                <button type="button" id="btn-verifycode" class="btn btn-success btn-block">
+                    VERIFY
+                </button>
+
+            </form>
+        </div>
+    </div>
+
+    <!--[if IE 8]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.2.5/ie8.js"></script>
+  <![endif]-->
+
+    <!--[if lte IE 9]>
+  <script src="https://cdn.auth0.com/js/polyfills/1.0/base64.min.js"></script>
+  <script src="https://cdn.auth0.com/js/polyfills/1.0/es5-shim.min.js"></script>
+  <![endif]-->
+
+    <script src="https://cdn.auth0.com/js/auth0/9.20.1/auth0.min.js"></script>
+    <script src="https://cdn.auth0.com/js/polyfills/1.0/object-assign.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+
+        // Comment this block out if testing locally
+            var config = JSON.parse(
+                decodeURIComponent(escape(window.atob('@@config@@')))
+            );
+
+            var leeway = config.internalOptions.leeway;
+            if (leeway) {
+                var convertedLeeway = parseInt(leeway);
+
+                if (!isNaN(convertedLeeway)) {
+                    config.internalOptions.leeway = convertedLeeway;
+                }
+            }
+
+            // 
+
+
+            // Use these params for testing locally, comment out if hosting on Auth0 
+
+            // var params = Object.assign({
+
+            //     domain: "oktzero.us.auth0.com",
+            //     clientID: "zrvj38nKKeV79EakdRfwmDlKHHctmtbz",
+            //     redirectUri: "http://localhost:3000",
+            //     responseType: 'token id_token'
+            // });
+
+            //
+
+            // Use these params for hosting the widget on Auth0, comment out if testing locally 
+            var params = Object.assign({
+                overrides: {
+                    __tenant: config.auth0Tenant,
+                    __token_issuer: config.authorizationServer.issuer
+                },
+                domain: config.auth0Domain,
+                clientID: config.clientID,
+                redirectUri: config.callbackURL,
+                responseType: 'code'
+            }, config.internalOptions);
+
+            //
+            var webAuth = new auth0.WebAuth(params);
+
+            webAuth.passwordlessLogin({
+                connection: 'sms',
+            }, function (err, res) {
+                // handle errors or continue
+            }
+            );
+
+
+            function startPwless() {
+                console.log("start")
+                var inputtedPhone = document.getElementById("phone-input").value
+
+                webAuth.passwordlessStart({
+                    connection: 'sms',
+                    send: 'code',
+                    phoneNumber: inputtedPhone
+                }, function (err, res) {
+                    // handle errors or continue
+                }
+                );
+            }
+
+            function verifyPwless() {
+                var inputtedPhone = document.getElementById("phone-input").value
+
+                var inputtedCode = document.getElementById("code-input").value
+                webAuth.passwordlessLogin({
+                    connection: 'sms',
+                    phoneNumber: inputtedPhone,
+                    verificationCode: inputtedCode
+                }, function (err, res) {
+                    console.log(inputtedCode)
+                    console.log(err)
+                    console.log(res)
+                    // handle errors or continue
+                }
+                );
+            }
+
+
+            function displayError(err) {
+                captcha.reload();
+                var errorMessage = document.getElementById('error-message');
+                errorMessage.innerHTML = err.policy || err.description;
+                errorMessage.style.display = 'block';
+            }
+
+            document.getElementById('btn-sendcode').addEventListener('click', startPwless);
+            document.getElementById('btn-verifycode').addEventListener('click', verifyPwless);
+        });
+    </script>
+</body>
+
+</html>
