@@ -89,7 +89,7 @@
     <script>
         window.addEventListener('load', function () {
 
-        // Comment this block out if testing locally
+            // Comment this block out if testing locally
             var config = JSON.parse(
                 decodeURIComponent(escape(window.atob('@@config@@')))
             );
@@ -133,14 +133,7 @@
             //
             var webAuth = new auth0.WebAuth(params);
 
-            webAuth.passwordlessLogin({
-                connection: 'sms',
-            }, function (err, res) {
-                // handle errors or continue
-            }
-            );
-
-
+// Send code to SMS when "send code" button is clicked
             function startPwless() {
                 console.log("start")
                 var inputtedPhone = document.getElementById("phone-input").value
@@ -155,29 +148,27 @@
                 );
             }
 
+//Verify SMS code sent when "Verify" button is clicked
             function verifyPwless() {
                 var inputtedPhone = document.getElementById("phone-input").value
 
                 var inputtedCode = document.getElementById("code-input").value
-                webAuth.passwordlessLogin({
-                    connection: 'sms',
-                    phoneNumber: inputtedPhone,
-                    verificationCode: inputtedCode
-                }, function (err, res) {
-                    console.log(inputtedCode)
-                    console.log(err)
-                    console.log(res)
-                    // handle errors or continue
+                if (inputtedCode !== (null || "")) {
+                    webAuth.passwordlessLogin({
+                        connection: 'sms',
+                        phoneNumber: inputtedPhone,
+                        verificationCode: inputtedCode,
+                        onRedirecting: done =>{
+                            done()
+                        }
+                    }, function (err, res) {
+                        console.log(inputtedCode)
+                        console.log(err)
+                        console.log(res)
+                        // handle errors or continue
+                    }
+                    );
                 }
-                );
-            }
-
-
-            function displayError(err) {
-                captcha.reload();
-                var errorMessage = document.getElementById('error-message');
-                errorMessage.innerHTML = err.policy || err.description;
-                errorMessage.style.display = 'block';
             }
 
             document.getElementById('btn-sendcode').addEventListener('click', startPwless);
